@@ -7,4 +7,5 @@
 $meta['discussionPage']   = array('string');
 $meta['userPage']         = array('string');
 $meta['hideTools']        = array('onoff');
-$conf['hideSiteTools']    = array('onoff');
+$meta['hideSiteTools']    = array('onoff');
+$meta['hideFooterTools']  = array('onoff');

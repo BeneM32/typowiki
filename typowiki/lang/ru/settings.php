@@ -9,3 +9,5 @@
 $lang['discussionPage']   = 'Страница обсуждения (оставьте поле пустым для отключения обсуждений)'; //default -- discussion:@ID@
 $lang['userPage']         = 'Страница пользователя (оставьте поле пустым для отключения страниц пользователей)'; //default -- user:@USER@:
 $lang['hideTools']        = 'Скрывать инструменты гостям?';
+$lang['hideSiteTools']    = 'Hide footer tools when not logged in?';
+$lang['hideFooterTools']  = 'Hide footer tools when not logged in?';

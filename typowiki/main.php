@@ -12,6 +12,7 @@ header('X-UA-Compatible: IE=edge,chrome=1');
 
 $showTools = !tpl_getConf('hideTools') || ( tpl_getConf('hideTools') && !empty($_SERVER['REMOTE_USER']) );
 $showSiteTools = !tpl_getConf('hideSiteTools') || ( tpl_getConf('hideSiteTools') && !empty($_SERVER['REMOTE_USER']) );
+$showFooterTools = !tpl_getConf('hideFooterTools') || ( tpl_getConf('hideFooterTools') && !empty($_SERVER['REMOTE_USER']) );
 $showSidebar = page_findnearest($conf['sidebar']) && ($ACT=='show');
 ?><!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>"
@@ -86,8 +87,7 @@ $showSidebar = page_findnearest($conf['sidebar']) && ($ACT=='show');
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-4 left">
-                            <?php
-                                if (!empty($_SERVER['REMOTE_USER'])) {
+                            <?php if (!empty($_SERVER['REMOTE_USER'])) {
                                     echo '<span class="ui-title">';
                                     tpl_userinfo(); /* 'Logged in as ...' */
                                     echo '</span>';
@@ -96,15 +96,17 @@ $showSidebar = page_findnearest($conf['sidebar']) && ($ACT=='show');
                         </div>
                         <div class="col-sm-8 right">
                             <ul role="navigation">
-                                <?php tpl_toolsevent('usertools', array(
-                                    'login'     => tpl_action('login', 1, 'li', 1),
-                                )); ?>
-                                
+
                                 <?php if (!empty($_SERVER['REMOTE_USER'])) {
                                     tpl_toolsevent('usertools', array(
                                     'login'     => tpl_action('login', 1, 'li', 1),
                                     'admin'     => tpl_action('admin', 1, 'li', 1),
-                                )); }?>
+                                )); 
+                                } else {
+                                    tpl_toolsevent('usertools', array(
+                                        'login'     => tpl_action('login', 1, 'li', 1),
+                                    ));
+                                }?>
                             </ul>
                         </div>
                     </div>
@@ -120,10 +122,10 @@ $showSidebar = page_findnearest($conf['sidebar']) && ($ACT=='show');
             <div id="dokuwiki__content">
                 <div class="container usr-container">
                         <?php if($conf['breadcrumbs']){ ?>
-                                        <div class="breadcrumbs"><?php tpl_breadcrumbs() ?></div>
-                                    <?php } ?>
-                                    <?php if($conf['youarehere']){ ?>
-                                        <div class="breadcrumbs"><?php tpl_youarehere() ?></div>
+                            <div class="breadcrumbs"><?php tpl_breadcrumbs() ?></div>
+                        <?php } ?>
+                        <?php if($conf['youarehere']){ ?>
+                            <div class="breadcrumbs"><?php tpl_youarehere() ?></div>
                         <?php } ?>
                     <div class="row usr-inner">
                         <div class="col-md-9 col-main">
@@ -175,53 +177,59 @@ $showSidebar = page_findnearest($conf['sidebar']) && ($ACT=='show');
         </div><!-- /wrapper -->
 
         <!-- ********** FOOTER ********** -->
-        <footer id="dokuwiki__footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-6 col-md-8">
-                        <div class="doc">
-                        <?php if (!empty($_SERVER['REMOTE_USER'])) { 
-                            tpl_pageinfo() /* 'Last modified' etc */ 
-                        } ?></div>
-                        <?php tpl_license('button') /* content license, parameters: img=*badge|button|0, imgonly=*0|1, return=*0|1 */ ?>
-                    </div>
-                    <div class="col-sm-3 col-md-2">
-                        <!-- PAGE ACTIONS -->
-                        <?php if ($showTools): ?>
-                            <div id="dokuwiki__pagetools">
-                                <ul class="footer-menu ul-raw">
-                                    <?php tpl_toolsevent('pagetools', array(
-                                        'edit'      => tpl_action('edit', 1, 'li', 1),
-                                        'discussion'=> _tpl_action('discussion', 1, 'li', 1),
-                                        'revisions' => tpl_action('revisions', 1, 'li', 1),
-                                        'backlink'  => tpl_action('backlink', 1, 'li', 1),
-                                        'subscribe' => tpl_action('subscribe', 1, 'li', 1),
-                                        'revert'    => tpl_action('revert', 1, 'li', 1),
-                                        'top'       => tpl_action('top', 1, 'li', 1),
-                                    )); ?>
-                                </ul>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="col-sm-3 col-md-2">
-                        <!-- SITE TOOLS -->
-                        <?php if ($showSiteTools): ?>
-                            <div id="dokuwiki__sitetools">
-                                <ul class="footer-menu ul-raw">
-                                    <?php tpl_toolsevent('sitetools', array(
-                                        'recent'    => tpl_action('recent', 1, 'li', 1),
-                                        'media'     => tpl_action('media', 1, 'li', 1),
-                                        'index'     => tpl_action('index', 1, 'li', 1),
-                                    )); ?>
-                                </ul>
-                            </div>
-                        <?php endif; ?>
+        <?php if ($showFooterTools): ?>
+            <footer id="dokuwiki__footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-8">
+                            <div class="doc">
+                            <?php if (!empty($_SERVER['REMOTE_USER'])) tpl_pageinfo() /* 'Last modified' etc */  ?></div>
+                            <?php tpl_license('button') /* content license, parameters: img=*badge|button|0, imgonly=*0|1, return=*0|1 */ ?>
+                        </div>
+                        <div class="col-sm-3 col-md-2">
+                            <!-- PAGE ACTIONS -->
+                            <?php if ($showTools): ?>
+                                <div id="dokuwiki__pagetools">
+                                    <ul class="footer-menu ul-raw">
+                                        <?php tpl_toolsevent('pagetools', array(
+                                            'edit'      => tpl_action('edit', 1, 'li', 1),
+                                            'discussion'=> _tpl_action('discussion', 1, 'li', 1),
+                                            'revisions' => tpl_action('revisions', 1, 'li', 1),
+                                            'backlink'  => tpl_action('backlink', 1, 'li', 1),
+                                            'subscribe' => tpl_action('subscribe', 1, 'li', 1),
+                                            'revert'    => tpl_action('revert', 1, 'li', 1),
+                                            'top'       => tpl_action('top', 1, 'li', 1),
+                                        )); ?>
+                                    </ul>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <div class="col-sm-3 col-md-2">
+                            <!-- SITE TOOLS -->
+                            <?php if ($showSiteTools): ?>
+                                <div id="dokuwiki__sitetools">
+                                    <ul class="footer-menu ul-raw">
+                                        <?php tpl_toolsevent('sitetools', array(
+                                            'recent'    => tpl_action('recent', 1, 'li', 1),
+                                            'media'     => tpl_action('media', 1, 'li', 1),
+                                            'index'     => tpl_action('index', 1, 'li', 1),
+                                        )); ?>
+                                    </ul>
+                                </div>
+                            <?php else: ?>
+                                <div id="dokuwiki__sitetools">
+                                    <ul class="footer-menu ul-raw">
+                                        <?php tpl_toolsevent('sitetools', array(
+                                        )); ?>
+                                    </ul>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
-            </div>
-        <div class="no"><?php tpl_indexerWebBug() /* provide DokuWiki housekeeping, required in all templates */ ?></div>
-        </footer><!-- /footer -->
-
+            <div class="no"><?php tpl_indexerWebBug() /* provide DokuWiki housekeeping, required in all templates */ ?></div>
+            </footer><!-- /footer -->
+        <?php endif; ?>
         <?php tpl_includeFile('footer.html') ?>
     </div></div><!-- /site -->
 

@@ -7,4 +7,5 @@
 $conf['discussionPage']   = 'discussion:@ID@';
 $conf['userPage']         = 'user:@USER@:';
 $conf['hideTools']        = 0;
-$conf['hideSiteTools']        = 0;
+$conf['hideSiteTools']    = 0;
+$conf['hideFooterTools']  = 0;
