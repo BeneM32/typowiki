@@ -11,6 +11,7 @@ if (!defined('DOKU_INC')) die(); /* must be run from within DokuWiki */
 header('X-UA-Compatible: IE=edge,chrome=1');
 
 $showTools = !tpl_getConf('hideTools') || ( tpl_getConf('hideTools') && !empty($_SERVER['REMOTE_USER']) );
+$showSiteTools = !tpl_getConf('hideSiteTools') || ( tpl_getConf('hideSiteTools') && !empty($_SERVER['REMOTE_USER']) );
 $showSidebar = page_findnearest($conf['sidebar']) && ($ACT=='show');
 ?><!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $conf['lang'] ?>"
@@ -96,12 +97,14 @@ $showSidebar = page_findnearest($conf['sidebar']) && ($ACT=='show');
                         <div class="col-sm-8 right">
                             <ul role="navigation">
                                 <?php tpl_toolsevent('usertools', array(
-                                    'userpage'  => _tpl_action('userpage', 1, 'li', 1),
-                                    'profile'   => tpl_action('profile', 1, 'li', 1),
-                                    'register'  => tpl_action('register', 1, 'li', 1),
+                                    'login'     => tpl_action('login', 1, 'li', 1),
+                                )); ?>
+                                
+                                <?php if (!empty($_SERVER['REMOTE_USER'])) {
+                                    tpl_toolsevent('usertools', array(
                                     'login'     => tpl_action('login', 1, 'li', 1),
                                     'admin'     => tpl_action('admin', 1, 'li', 1),
-                                )); ?>
+                                )); }?>
                             </ul>
                         </div>
                     </div>
@@ -176,7 +179,10 @@ $showSidebar = page_findnearest($conf['sidebar']) && ($ACT=='show');
             <div class="container">
                 <div class="row">
                     <div class="col-sm-6 col-md-8">
-                        <div class="doc"><?php tpl_pageinfo() /* 'Last modified' etc */ ?></div>
+                        <div class="doc">
+                        <?php if (!empty($_SERVER['REMOTE_USER'])) { 
+                            tpl_pageinfo() /* 'Last modified' etc */ 
+                        } ?></div>
                         <?php tpl_license('button') /* content license, parameters: img=*badge|button|0, imgonly=*0|1, return=*0|1 */ ?>
                     </div>
                     <div class="col-sm-3 col-md-2">
@@ -199,15 +205,17 @@ $showSidebar = page_findnearest($conf['sidebar']) && ($ACT=='show');
                     </div>
                     <div class="col-sm-3 col-md-2">
                         <!-- SITE TOOLS -->
-                        <div id="dokuwiki__sitetools">
-                            <ul class="footer-menu ul-raw">
-                                <?php tpl_toolsevent('sitetools', array(
-                                    'recent'    => tpl_action('recent', 1, 'li', 1),
-                                    'media'     => tpl_action('media', 1, 'li', 1),
-                                    'index'     => tpl_action('index', 1, 'li', 1),
-                                )); ?>
-                            </ul>
-                        </div>
+                        <?php if ($showSiteTools): ?>
+                            <div id="dokuwiki__sitetools">
+                                <ul class="footer-menu ul-raw">
+                                    <?php tpl_toolsevent('sitetools', array(
+                                        'recent'    => tpl_action('recent', 1, 'li', 1),
+                                        'media'     => tpl_action('media', 1, 'li', 1),
+                                        'index'     => tpl_action('index', 1, 'li', 1),
+                                    )); ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
